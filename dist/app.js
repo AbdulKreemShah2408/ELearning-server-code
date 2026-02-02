@@ -7,6 +7,7 @@ exports.app = void 0;
 require('dotenv').config();
 const express_1 = __importDefault(require("express"));
 exports.app = (0, express_1.default)();
+exports.app.set('trust proxy', 1);
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const error_1 = require("./middleware/error");

@@ -1,6 +1,7 @@
 require ('dotenv').config()
 import express, { NextFunction, Request, Response } from "express"
 export const app=express();
+app.set('trust proxy', 1);
 import cors from "cors"
 import cookieParser from "cookie-parser";
 import {errorMiddleware} from "./middleware/error"
