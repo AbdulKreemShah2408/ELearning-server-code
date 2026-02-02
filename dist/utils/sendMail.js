@@ -23,8 +23,9 @@ const sendMail = async (options) => {
     //extract values
     const { email, subject, template, data } = options;
     // create the full path to the ejs template file
-    const templatePath = path_1.default.join(__dirname, '../mails', template);
-    // Render the EJS Template to HTML by injecting data into it
+    // Naya wala (Vercel friendly):
+    const templatePath = path_1.default.join(process.cwd(), "mails", template);
+    // Render the EJS Template
     const html = await ejs_1.default.renderFile(templatePath, data);
     //setup the email options
     const mailOptions = {

@@ -257,11 +257,9 @@ export const addAnswer = catchAsyncError(
           name: question.user.name,
           title: courseContent.title,
         };
-       const templatePath = path.join(process.cwd(), "mails", "questionReply.ejs");
-       try {
-          // ejs.renderFile ko await ke sath use karein
-          const html = await ejs.renderFile(templatePath, data);
 
+        try {
+          // Sirf sendMail call karein, rendering andar khud ho jayegi
           await sendMail({
             email: question.user.email,
             subject: "Question Reply",

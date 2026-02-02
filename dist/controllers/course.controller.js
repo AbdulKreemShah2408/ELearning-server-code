@@ -11,8 +11,6 @@ const course_service_1 = require("../services/course.service");
 const course_model_1 = __importDefault(require("../models/course.model"));
 const redis_1 = require("../utils/redis");
 const mongoose_1 = __importDefault(require("mongoose"));
-const ejs_1 = __importDefault(require("ejs"));
-const path_1 = __importDefault(require("path"));
 const sendMail_1 = __importDefault(require("../utils/sendMail"));
 const notification_model_1 = __importDefault(require("../models/notification.model"));
 const axios_1 = __importDefault(require("axios"));
@@ -212,10 +210,8 @@ exports.addAnswer = (0, catchAsyncErrors_1.catchAsyncError)(async (req, res, nex
                 name: question.user.name,
                 title: courseContent.title,
             };
-            const templatePath = path_1.default.join(process.cwd(), "mails", "questionReply.ejs");
             try {
-                // ejs.renderFile ko await ke sath use karein
-                const html = await ejs_1.default.renderFile(templatePath, data);
+                // Sirf sendMail call karein, rendering andar khud ho jayegi
                 await (0, sendMail_1.default)({
                     email: question.user.email,
                     subject: "Question Reply",

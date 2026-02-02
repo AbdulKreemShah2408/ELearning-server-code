@@ -26,10 +26,11 @@ const sendMail=async(options:EmailOptions):Promise<void>=>{
     const {email,subject,template,data}=options;
 
     // create the full path to the ejs template file
-    const templatePath=path.join(__dirname,'../mails',template);
+    // Naya wala (Vercel friendly):
+const templatePath = path.join(process.cwd(), "mails", template);
 
-    // Render the EJS Template to HTML by injecting data into it
-    const html:string=await ejs.renderFile(templatePath,data);
+// Render the EJS Template
+const html: string = await ejs.renderFile(templatePath, data);
     //setup the email options
     const mailOptions={
         from:process.env.SMTP_MAIL,// sender mail
