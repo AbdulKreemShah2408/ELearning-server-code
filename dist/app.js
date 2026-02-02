@@ -17,44 +17,42 @@ const notification_route_1 = __importDefault(require("./routes/notification.rout
 const analytics_route_1 = __importDefault(require("./routes/analytics.route"));
 const layout_route_1 = __importDefault(require("./routes/layout.route"));
 const express_rate_limit_1 = require("express-rate-limit");
-// body parser
+// 1. Body parser
 exports.app.use(express_1.default.json({ limit: "50mb" }));
-// cookie parser
+// 2. Cookie parser
 exports.app.use((0, cookie_parser_1.default)());
-// cors
+// 3. CORS (Credentials true hona lazmi hai cookies ke liye)
 exports.app.use((0, cors_1.default)({
     origin: 'https://e-learning-client-code.vercel.app',
     credentials: true,
 }));
-//api request limit
+// 4. Rate Limiter (Routes se PEHLE hona chahiye)
 const limiter = (0, express_rate_limit_1.rateLimit)({
     windowMs: 15 * 60 * 1000,
     limit: 100,
     standardHeaders: "draft-8",
     legacyHeaders: false,
-    ipv6Subnet: 56,
 });
-// routes
+exports.app.use(limiter); // <--- Yahan shift kar diya
+// 5. Routes
 exports.app.use("/api/v1", user_route_1.default);
 exports.app.use("/api/v1", course_route_1.default);
 exports.app.use("/api/v1", order_route_1.default);
 exports.app.use("/api/v1", notification_route_1.default);
 exports.app.use("/api/v1", analytics_route_1.default);
 exports.app.use("/api/v1", layout_route_1.default);
-// testing route
-exports.app.get("/test", (req, res, next) => {
+// Testing route
+exports.app.get("/test", (req, res) => {
     res.status(200).json({
         success: true,
         message: "Api is working",
     });
 });
-// unkown route
+// Unknown route handler
 exports.app.all("*", (req, res, next) => {
     const err = new Error(`Route ${req.originalUrl} not found`);
-    err.statusCode = 400;
+    err.statusCode = 404; // Route not found hamesha 404 hona chahiye
     next(err);
 });
-// handle error middleware
-//Middleware Calls
-exports.app.use(limiter);
+// 6. Global Error Middleware (Hamesha AAKHIR mein)
 exports.app.use(error_1.errorMiddleware);
