@@ -23,7 +23,7 @@ exports.app.use(express_1.default.json({ limit: "50mb" }));
 exports.app.use((0, cookie_parser_1.default)());
 // cors
 exports.app.use((0, cors_1.default)({
-    origin: ['http://localhost:3000'],
+    origin: 'https://e-learning-client-code.vercel.app',
     credentials: true,
 }));
 //api request limit

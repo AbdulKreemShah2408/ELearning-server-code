@@ -15,13 +15,15 @@ exports.accessTokenOptions = {
     expires: new Date(Date.now() + exports.accessTokenExpiresIn * 60 * 60 * 1000),
     maxAge: exports.accessTokenExpiresIn * 60 * 60 * 1000,
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: "none",
+    secure: true,
 };
 exports.refreshTokenOptions = {
     expires: new Date(Date.now() + exports.refreshTokenExpiresIn * 24 * 60 * 60 * 1000),
     maxAge: exports.refreshTokenExpiresIn * 24 * 60 * 60 * 1000,
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: "none",
+    secure: true,
 };
 const sendToken = (user, statusCode, res) => {
     const accessToken = user.SignAccessToken();
