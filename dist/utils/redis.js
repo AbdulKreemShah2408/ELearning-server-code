@@ -5,9 +5,20 @@ const ioredis_1 = require("ioredis");
 require('dotenv').config();
 const redisClient = () => {
     if (process.env.REDIS_URL) {
-        console.log(`Redis connected `);
+        // Log tabhi karein jab connection actually successful ho
         return process.env.REDIS_URL;
     }
-    throw new Error(`Redis connection failed`);
+    throw new Error(`Redis connection URL missing`);
 };
-exports.redis = new ioredis_1.Redis(redisClient());
+// TLS configuration add karein
+exports.redis = new ioredis_1.Redis(redisClient(), {
+    tls: {
+        rejectUnauthorized: false
+    }
+});
+exports.redis.on('connect', () => {
+    console.log("Redis connected successfully");
+});
+exports.redis.on('error', (err) => {
+    console.log("Redis connection error:", err);
+});
