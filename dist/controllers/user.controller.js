@@ -31,22 +31,19 @@ exports.registerationUser = (0, catchAsyncErrors_1.catchAsyncError)(async (req, 
         const activationToken = (0, exports.createActivationToken)(user);
         const activationCode = activationToken.activationCode;
         const data = { user: { name: user.name }, activationCode };
-        const html = await ejs_1.default.renderFile(path_1.default.join(__dirname, "../mails/activation-mail.ejs"), data);
+        const templatePath = path_1.default.join(process.cwd(), "mails", "questionReply.ejs");
         try {
+            // ejs.renderFile ko await ke sath use karein
+            const html = await ejs_1.default.renderFile(templatePath, data);
             await (0, sendMail_1.default)({
                 email: user.email,
-                subject: "Activate your account",
-                template: "activation-mail.ejs",
+                subject: "Question Reply",
+                template: "questionReply.ejs", // ensure sendMail function uses the 'html' generated above or handles the template correctly
                 data,
-            });
-            res.status(201).json({
-                success: true,
-                message: `Please check your email ${user.name} to activate your account`,
-                activationToken: activationToken.token,
             });
         }
         catch (error) {
-            return next(new ErrorHandler_1.default(error.message, 400));
+            return next(new ErrorHandler_1.default(error.message, 500));
         }
     }
     catch (error) {

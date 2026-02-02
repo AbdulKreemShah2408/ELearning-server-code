@@ -1,11 +1,13 @@
 {
   "version": 2,
   "name": "LMS Server",
-
   "builds": [
     {
       "src": "server.ts",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["mails/**"]
+      }
     }
   ],
   "routes": [

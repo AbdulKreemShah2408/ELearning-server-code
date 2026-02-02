@@ -257,14 +257,15 @@ export const addAnswer = catchAsyncError(
           name: question.user.name,
           title: courseContent.title,
         };
-        const html = ejs.renderFile(
-          path.join(__dirname, "../mails/questionReply.ejs")
-        );
-        try {
+       const templatePath = path.join(process.cwd(), "mails", "questionReply.ejs");
+       try {
+          // ejs.renderFile ko await ke sath use karein
+          const html = await ejs.renderFile(templatePath, data);
+
           await sendMail({
             email: question.user.email,
             subject: "Question Reply",
-            template: "questionReply.ejs",
+            template: "questionReply.ejs", 
             data,
           });
         } catch (error: any) {

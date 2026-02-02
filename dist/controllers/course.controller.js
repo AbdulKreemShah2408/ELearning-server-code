@@ -212,8 +212,10 @@ exports.addAnswer = (0, catchAsyncErrors_1.catchAsyncError)(async (req, res, nex
                 name: question.user.name,
                 title: courseContent.title,
             };
-            const html = ejs_1.default.renderFile(path_1.default.join(__dirname, "../mails/questionReply.ejs"));
+            const templatePath = path_1.default.join(process.cwd(), "mails", "questionReply.ejs");
             try {
+                // ejs.renderFile ko await ke sath use karein
+                const html = await ejs_1.default.renderFile(templatePath, data);
                 await (0, sendMail_1.default)({
                     email: question.user.email,
                     subject: "Question Reply",
