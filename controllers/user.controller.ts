@@ -40,12 +40,12 @@ export const registerationUser = catchAsyncError(
           // ejs.renderFile ko await ke sath use karein
           const html = await ejs.renderFile(templatePath, data);
 
-          await sendMail({
-            email: user.email,
-            subject: "Question Reply",
-            template: "questionReply.ejs", // ensure sendMail function uses the 'html' generated above or handles the template correctly
-            data,
-          });
+         await sendMail({
+    email: user.email,
+    subject: "Activate your account",
+    template: "activation-mail.ejs",
+    data: { name: user.name, activationCode: "1234" } // Yahan 'name' hona lazmi hai
+});
         } catch (error: any) {
           return next(new ErrorHandler(error.message, 500));
         }

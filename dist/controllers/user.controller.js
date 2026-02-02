@@ -37,9 +37,9 @@ exports.registerationUser = (0, catchAsyncErrors_1.catchAsyncError)(async (req, 
             const html = await ejs_1.default.renderFile(templatePath, data);
             await (0, sendMail_1.default)({
                 email: user.email,
-                subject: "Question Reply",
-                template: "questionReply.ejs", // ensure sendMail function uses the 'html' generated above or handles the template correctly
-                data,
+                subject: "Activate your account",
+                template: "activation-mail.ejs",
+                data: { name: user.name, activationCode: "1234" } // Yahan 'name' hona lazmi hai
             });
         }
         catch (error) {
