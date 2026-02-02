@@ -35,7 +35,7 @@ export const registerationUser = catchAsyncError(
       const activationToken = createActivationToken(user);
       const activationCode = activationToken.activationCode;
       const data = { user: { name: user.name }, activationCode };
-      const templatePath = path.join(process.cwd(), "mails", "questionReply.ejs");
+      const templatePath = path.join(process.cwd(), "mails",  "activation-mail.ejs");
     try {
           // ejs.renderFile ko await ke sath use karein
           const html = await ejs.renderFile(templatePath, data);
