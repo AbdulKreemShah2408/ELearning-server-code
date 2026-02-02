@@ -19,6 +19,42 @@ interface IRegistrationBody {
   avatar?: string;
 }
 
+// export const registerationUser = catchAsyncError(
+//   async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//       const { name, email, password, avatar } = req.body;
+//       const isEmailExist = await userModel.findOne({ email });
+//       if (isEmailExist) {
+//         return next(new ErrorHandler("Email Already exits!", 400));
+//       }
+//       const user: IRegistrationBody = {
+//         name,
+//         email,
+//         password,
+//       };
+//       const activationToken = createActivationToken(user);
+//       const activationCode = activationToken.activationCode;
+//       const data = { user: { name: user.name }, activationCode };
+//       const templatePath = path.join(process.cwd(), "mails",  "activation-mail.ejs");
+//     try {
+//           // ejs.renderFile ko await ke sath use karein
+//           const html = await ejs.renderFile(templatePath, data);
+
+//          await sendMail({
+//     email: user.email,
+//     subject: "Activate your account",
+//     template: "activation-mail.ejs",
+//     data: { name: user.name, activationCode: "1234" } // Yahan 'name' hona lazmi hai
+// });
+//         } catch (error: any) {
+//           return next(new ErrorHandler(error.message, 500));
+//         }
+//     } catch (error: any) {
+//       return next(new ErrorHandler(error.message, 400));
+//     }
+//   }
+// );
+
 export const registerationUser = catchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -27,34 +63,44 @@ export const registerationUser = catchAsyncError(
       if (isEmailExist) {
         return next(new ErrorHandler("Email Already exits!", 400));
       }
-      const user: IRegistrationBody = {
-        name,
-        email,
-        password,
-      };
+
+      const user: IRegistrationBody = { name, email, password };
+
       const activationToken = createActivationToken(user);
       const activationCode = activationToken.activationCode;
-      const data = { user: { name: user.name }, activationCode };
-      const templatePath = path.join(process.cwd(), "mails",  "activation-mail.ejs");
-    try {
-          // ejs.renderFile ko await ke sath use karein
-          const html = await ejs.renderFile(templatePath, data);
 
-         await sendMail({
-    email: user.email,
-    subject: "Activate your account",
-    template: "activation-mail.ejs",
-    data: { name: user.name, activationCode: "1234" } // Yahan 'name' hona lazmi hai
-});
-        } catch (error: any) {
-          return next(new ErrorHandler(error.message, 500));
-        }
+      // DATA STRUCTURE FIX: 
+      // Template ko 'user' object ke andar 'name' chahiye.
+      const data = { 
+        user: { name: user.name }, 
+        activationCode 
+      };
+
+      try {
+        // Aapne controller mein ejs.renderFile manually chalaya tha, 
+        // uski zaroorat nahi hai kyunki sendMail.ts khud render karta hai.
+        await sendMail({
+          email: user.email,
+          subject: "Activate your account",
+          template: "activation-mail.ejs",
+          data, // Isme 'user.name' aur 'activationCode' dono sahi format mein hain
+        });
+
+        // Response bhejye taake frontend ko success pata chale
+        res.status(201).json({
+          success: true,
+          message: `Please check your email: ${user.email} to activate your account!`,
+          activationToken: activationToken.token,
+        });
+
+      } catch (error: any) {
+        return next(new ErrorHandler(error.message, 500));
+      }
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
   }
 );
-
 interface IActivationToken {
   token: string;
   activationCode: string;
